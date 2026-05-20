@@ -1,5 +1,47 @@
 # Changelog
 
+## v0.2.7
+
+### Added
+
+- Added a "Pause all sessions" command palette action that suspends every running session at once, enabling clean restarts without triggering interrupted-session banners when resuming.
+- Added keyboard shortcuts for adding comments on plan text, with support for rebinding via the command palette.
+- Added OAuth Client ID field to the remote MCP server configuration form, and added Slack as a popular MCP server preset.
+- Canvas markdown editor now shows a floating formatting toolbar when text is selected, making inline formatting actions available right where you're working.
+- Emoji shortcode picker in the message composer: type `:` to search and insert GitHub emoji shortcodes (e.g. `:rocket:` → 🚀). Shortcodes are rendered as emoji while editing and preserved as `:shortcode:` in the exported markdown.
+- Git is bundled with the app under a staff-only experiment, paving the way for users to no longer need git installed on their system.
+- Health check view now shows a Database section with schema version, latest supported version, and database file path (with copy button)
+- Rich Markdown editors now support table editing with row and column insertion, deletion, and column alignment controls.
+- Sidebar workspace hover previews now show when a PR has auto-merge or agent merge enabled.
+
+### Changed
+
+- GitHub Enterprise Server onboarding now uses the device-code authentication flow, matching the GitHub.com experience.
+- Improved markdown list editing in the rich composer: nested lists now render correctly, indent/outdent actions are available via toolbar buttons and Tab/Shift+Tab (or Cmd/Ctrl+[/]) when the cursor is in a list item, and raw markdown editing mode uses a monospace font.
+- Plan review now shows a single unified toolbar when selecting text, combining the comment action and formatting options in one place.
+- The artifact file picker now starts collapsed by default when opening a markdown editor from the chat canvas panel, keeping the editor focused on the new document.
+
+### Fixed
+
+- Anchor navigation in the integrated browser now works correctly without disrupting the current page view.
+- Cross-session messages (send_session_message / send_chat_message) are now reliably delivered even when the target workspace session is not currently active, instead of silently failing while reporting success.
+- File tree folders can now be manually collapsed even when they contain the currently selected file
+- Fixed a Linux-only bug where temporary files created during PR comment replies would appear in the repository root and show up in diffs.
+- Fixed an issue where clicking "New session" on a pull request or issue could create duplicate workspaces in the sidebar.
+- Fixed an issue where creating a new session for a repository that was still cloning would silently create the session in a different, already-cloned repository instead.
+- Fixed an issue where navigating away while a merge or review drawer was open would leave the backdrop stuck over the app.
+- Fixed an issue where plan canvas comments would disappear the first time a user attached one during exit-plan review.
+- Fixed an issue where the model could repeatedly call the session rename tool instead of continuing with the user's task.
+- Fixed browser preview layout on Linux where the preview appeared as the bottom half of the window instead of in the right panel.
+- Fixed the inline review reply loop and duplicate agent replies that could occur when multiple comments were posted on the same thread in quick succession.
+- Improved canvas markdown editor performance during window resize.
+- Improved error guidance when app update signature verification fails — users now see a clear message with a link to download and reinstall the latest release.
+- Inline review comments from agent reviews no longer get permanently stuck showing an "Investigating" badge.
+- PR review comments can now be added to deleted lines (shown in red) in the diff view, not just added or context lines.
+- Restored undo/redo (Cmd+Z / Ctrl+Z) functionality in the composer, and fixed an issue where focus could be unexpectedly pulled back into the composer textarea.
+- Screen readers now announce the Welcome page heading immediately when the onboarding step appears.
+- Status updates during the app authorization flow (code copied, browser opened, waiting for authorization, timeout hint) are now announced to screen readers.
+
 ## v0.2.6
 
 ### Added
