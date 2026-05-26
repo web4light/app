@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.10
+
+### Changed
+
+- Merging a pull request now updates the UI immediately with a pulsing "Finalizing merge…" indicator, rather than waiting for the full server round-trip to complete.
+- Model picker now groups models by capability tier (Versatile, Powerful, Lightweight), shows recently used models, and adds an Unavailable section for policy-gated models. Anthropic model labels no longer include the redundant "Claude" prefix.
+
+### Fixed
+
+- Fixed the diff view jumping or shifting when the agent edits files while you are scrolling through changes.
+- Slash-command menu on the home screen no longer appears behind the logo, making its options readable.
+
 ## v0.2.9
 
 ### Added
