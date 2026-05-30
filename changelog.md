@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.2.18
+
+### Changed
+
+- The files panel toolbar no longer shows redundant insertion/deletion counts when the active scope's stats match the Changes tab total (e.g. the "All changes" scope, or "Committed" with a clean working tree).
+
+### Fixed
+
+- Cross-session messages and workspace kickoffs now show the clean message text across all clients instead of the verbose internal wrapper, while the desktop still shows the sender attribution banner.
+- Fixed an issue where leaving an active streaming session with the display asleep caused the entire session to replay character-by-character on wake, with heavy repainting and blocked session switching.
+- Spell-check squiggles no longer appear in the freeform answer text box when responding to agent prompts.
+- The README toggle in the new repository dialog now shows a visible label and description, making the option clearer for sighted users.
+- When Git is not installed, the error shown during repository cloning now clearly states that Git is required and prompts you to install it, instead of showing a confusing system-level error message.
+
 ## v0.2.17
 
 ### Added
