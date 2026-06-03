@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.23
+
+### Fixed
+
+- Fixed automatic sync incorrectly resetting local branch checkouts, which could silently discard local commits or move the branch behind its expected position.
+- Fixed canvas panels disappearing while a modal overlay (such as the command palette or settings dialog) was open; the canvas now stays visible beneath the overlay.
+
 ## v0.2.22
 
 ### Fixed
@@ -9,11 +16,37 @@
 
 ## v0.2.21
 
+### Added
+
+- Added a long context toggle in the model picker for models that support extended context windows, with the active tier shown in the model picker button.
+- Added support for a `gh://session/new` deep link that opens the app and starts a new session for a given repository, pull request, or branch — with optional prompt and mode query parameters.
+- Several experiments are now on for all users: canvases, MCP apps, the inbox tray menu, the channels view, cli sessions, browser-agent tools, the workspace uncommitted scope, the invertocat minigame, and editing files by selecting lines. Cloud workflows are also always on, and cloud sessions remain user-toggleable but default on for everyone. Voice dictation is now opt-in for everyone from Settings → Experimental.
+- The agent can now read back the rendered output from a terminal after running a command, enabling it to see and act on command results in the terminal.
+
+### Changed
+
+- Copilot Pro, Pro+, and Max subscribers are now taken directly to the repository selection step after sign-in, bypassing the waitlist.
+- The copy button next to PR and issue references is now always visible instead of only appearing on hover.
+- The remove-project and delete-session dialogs now accurately explain that session worktrees are force-deleted, that uncommitted work is snapshotted to a recovery ref, and that recovering that work is a manual git step.
+
 ### Fixed
 
+- Automation run timeline now displays older runs above newer runs, matching the order used in the session timeline picker.
+- Command Palette now shows "Go to My work" (with the correct icon) instead of the outdated "Go to Inbox" label.
+- External links clicked inside the browser preview now show a confirmation dialog offering to open the URL in your default browser, instead of being silently blocked.
+- Fixed a bug where clicking "Update branch" after a local branch diverged from its upstream remote would send Copilot to merge or rebase the wrong target branch instead of the correct remote tracking branch.
+- Fixed a spurious scrollbar appearing in the inline diff comment textarea on macOS when "Always show scrollbars" is enabled.
+- Fixed app sluggishness (slow typing, slow session switching) when multiple concurrent sessions are streaming responses at the same time.
 - Fixed images embedded in issue timelines failing to load due to an HTTP 400 error on signed attachment URLs.
+- Fixed the !cmd shell shortcut when triggered from the home screen or an empty/new session — it now correctly bootstraps a workspace and opens a terminal tab in the session worktree directory instead of failing or running in the wrong location.
+- Pasting a pull request URL into the quick-open palette (cmd-k) now opens the session that created that PR instead of offering to start a duplicate. Sessions are also now findable by the PR title or URL even when the session name differs.
+- Quota usage percentages now display as whole numbers, consistent with the Copilot CLI.
+- Removed the floating "No comments or activity yet." text that appeared visually in the pull request and issue detail view when there was no activity.
 - Restored the hidden octocat minigame on the home screen, which had stopped appearing after a recent update.
 - Restored the message composer during active automation runs, allowing users to respond to prompts and permission requests without first opening the session separately.
+- Searching for "high contrast" in Settings now surfaces the Mode section where the High Contrast option lives.
+- The model picker and session info popover now correctly show the context window size when long context is enabled.
+- Uncommitted and untracked files are now preserved in a recoverable git ref before archiving or deleting a session, preventing silent data loss when removing worktrees.
 
 ## v0.2.20
 
