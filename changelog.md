@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.24
+
+### Fixed
+
+- In worktree sessions, the agent now correctly anchors file paths to the worktree's own checkout instead of the project's main checkout, preventing edits from silently landing on the wrong branch.
+
 ## v0.2.23
 
 ### Fixed
