@@ -1,5 +1,398 @@
 # Changelog
 
+## v0.2.31
+
+### Added
+
+- A new Background agents pill above the composer lists active background tasks; clicking a task opens its output in a side panel. In-chat subagent rows now also open task output in a side panel and show agent-type icons.
+- Added a per-row actions menu to the pull request checks panel, letting you re-run failed checks, cancel pending checks, and open check logs without leaving the workspace.
+- Agent merge now remembers your last choice per project. When you create a pull request, the agent-merge selection you last used in that project is reapplied automatically, so you don't have to re-enable it every time.
+- GitHub Projects URLs pasted into the chat composer now render as styled reference pills (with the project name and icon), matching the existing behavior for Issues and Pull Requests.
+- Quick chat now shows an empty state with a GitHub mark and rotating tips when no messages have been sent yet, helping users discover available commands and features.
+- Right-clicking a GitHub-backed project in the sidebar now shows an "Open on GitHub" option that opens the repository in the browser.
+- Right-clicking selected text in a conversation reply now shows a context menu with options to copy the selection or quote it as a follow-up in the composer.
+
+### Changed
+
+- Active tabs now use medium font weight instead of semibold, giving tab strips a lighter, more balanced appearance across the app.
+- Git operations (such as status and diff) are now significantly faster when working with large repositories.
+- The onboarding screen for users without access now directs them to explore Copilot subscription plans instead of joining a waitlist.
+
+### Fixed
+
+- Agent merge now starts its first check promptly after a pull request is created instead of waiting up to a minute.
+- Clicking the scrollbar or padding in the slash command, skill mention, and file reference menus no longer closes the menu before you can scroll.
+- Diff comments containing bare GitHub URLs no longer render clipped or invisible after their link metadata loads.
+- Fix the Linux clipboard via the native backend: images now paste when the webview doesn't expose them, and copy buttons work on wlroots Wayland compositors (such as Hyprland).
+- Fixed a 2–3 second UI freeze on macOS when enabling voice dictation for the first time and the microphone permission prompt appeared.
+- Fixed a security issue where agent-generated links using dangerous URL schemes (javascript:, data:, vbscript:) could execute code in the app.
+- Fixed git operations failing with "terminal prompts disabled" when working in repositories with non-GitHub remotes (Azure DevOps, GitLab, Bitbucket, etc.)
+- Fixed high GPU usage and fan spin-up on macOS while the app is idle, particularly noticeable on high-refresh-rate (120 Hz ProMotion) displays.
+- Fixed intermittent server errors when performing pull request actions (such as queuing, toggling auto-merge, and adding reactions) by automatically retrying transient failures.
+- Fixed the merge panel incorrectly showing "Merge blocked" when a pull request is in the merge queue; it now correctly shows "Queued to merge".
+- Fixed the Update branch button in the merge drawer incorrectly triggering the conflict-resolution agent flow when the branch was simply behind the base branch with no merge conflicts.
+- Links and avatars in the inbox, pull request view, and prompt URL chips now correctly point to the right host when connected to a GitHub Enterprise Cloud Data Residency instance.
+- Mention, issue, and commit autolinks in pull request and comment bodies now resolve to the correct host when connected to a GitHub Enterprise Cloud Data Residency instance.
+- On macOS and Linux, the app now restricts the local database file (which may contain an auth token) to owner-only permissions (0600), and repairs existing installations on the next launch.
+- Opening Settings is now faster.
+- Opening the command palette (⌘K) is now faster and feels instant: it no longer triggers redundant network subscriptions on every open (which could cause multi-second delays for users with many pull requests), renders its overlay through a dedicated portal to avoid expensive whole-window style recalculation, and appears immediately instead of animating in.
+- Project attachment pills in the composer now show the correct project icon and project name instead of the GitHub owner avatar and a user-like label.
+- Screen readers now announce the actual key combination when focusing a keyboard shortcut chip in Settings › Accessibility › Keyboard shortcuts, instead of only reading the command name.
+- The app now attempts to bring itself to the foreground when opened via a deep link from the browser, including when the app window is on a different macOS Space.
+- The auto-merge agent no longer blocks on or attempts to fix optional (non-required) CI checks; only checks required by branch protection are considered when determining whether a PR is mergeable.
+
+## v0.2.30
+
+### Added
+
+- Added a "Remote sessions" setting in General settings that lets you choose the default remote behavior for new sessions: Off, Export (transcript only), or Remote control.
+- Added a new "Agent merge reply attribution" toggle in Settings > General (on by default). When enabled, agent merge appends a short attribution line to the replies it posts when resolving pull request review threads, indicating the reply was made automatically by the GitHub Copilot app.
+- Quick Chat now includes an integrated terminal in its right panel, so you can run commands without leaving the chat.
+- You can now paste or drag-and-drop images directly into GitHub comment boxes (issues, pull requests, reviews, and the create issue dialog) — the image uploads automatically and the hosted link is inserted into the comment.
+
+### Changed
+
+- Agent questions now appear as a card above the composer instead of replacing it. Clicking a choice or pressing its number key highlights it; pressing Enter or clicking Continue confirms. Pressing Escape or sending a normal message dismisses the prompt.
+- Anthropic model names now display in full (e.g. "Claude Opus 4.8", "Claude Sonnet 4.6") in the model picker and model-change messages, matching how GPT and Gemini models are already shown.
+- Clicking Run now opens the run-script terminal in a bottom split of the right panel instead of taking over the main tab group, so the diff or files surface stays visible above the run output.
+- The command palette placeholder now mentions sessions, making it easier to discover that you can search for active sessions from the same entry point.
+- The pull request inbox now loads initial results faster; diff stats and check status badges appear shortly after in a follow-up update.
+
+### Fixed
+
+- (Windows/Linux) Deep-links now route to the focused app instance when multiple instances are running, and closing one instance no longer breaks deep-link handling in others.
+- API errors (billing misconfiguration, bad credentials, server errors, connection failures) now display as readable messages in the conversation instead of raw JSON or HTTP response text.
+- Canvas tabs (extension, editor, and browser canvases) no longer reappear after restarting a session when the user had previously closed them.
+- Closing a terminal canvas now persists across session switches — it no longer reappears when reselecting a session.
+- Enabling remote control now shows a clear error when the session is unavailable (e.g. blocked by enterprise policy) instead of a false success notification with non-functional actions.
+- Fixed a bug in the Rich view editor where saving a markdown file containing snake_case identifiers in tables caused backslashes to double on every save, ballooning the file size and freezing the session.
+- Fixed a false "Copilot CLI failed to start" error that could appear on busy machines even when the CLI was healthy.
+- Fixed a performance issue where opening multiple workspaces could pin a CPU core at 100% and cause the app to drop to near-zero frames per second.
+- Fixed an error when opening an installed extension canvas from the "+" menu that caused a "Failed to open canvas" error for extensions with longer names.
+- Fixed an error where USB microphones reporting 24-bit or 32-bit audio formats (such as the Jabra Link 380 on Windows) failed with "Unsupported microphone sample format" in Voice mode.
+- Fixed an issue on macOS and Linux where Git Credential Manager would repeatedly display a "GitHub Sign in" dialog during background git operations, causing a loop of prompts that could not be permanently dismissed.
+- Fixed an issue where clicking "Re-run" in the pull request Checks panel would open duplicate browser tabs instead of re-running the check.
+- Fixed an issue where reopening a pull request with an already-provisioned workspace would stall the UI indefinitely on "Preparing project..."
+- Fixed an issue where the GitHub re-authentication banner would appear repeatedly during transient GitHub API outages, even when the account token was still valid.
+- Fixed deep-link callbacks on Linux opening a new instance instead of routing to the running one.
+- Fixed Linux updates so deb and rpm installs show release-page guidance instead of failing to self-update, while AppImage installs can self-update again.
+- Fixed markdown rendering: footnotes now appear as smaller muted text with a dividing line, task-list checkboxes stay vertically centered at all text sizes, and GitHub issue/PR reference links wrap correctly inside task lists.
+- Fixed unreadable word-level diff highlights in the GitHub Light High Contrast theme, where changed words appeared as dark text on a dark background.
+- Inbox search results now respect the requested sort order instead of always being sorted by most recently updated.
+- Model provider icons in the model picker now correctly reflect the active light/dark theme tone, including on first paint.
+- Pasting multiline text inside a blockquote now keeps all lines within the quote instead of only the first line escaping into unquoted text.
+- Project pickers in the automation dialog and new-session view now label each entry by its unique project name, so multiple worktrees or folders of the same repository are distinguishable.
+- Sessions are now correctly renamed by the agent when the first-prompt auto-generated name contained punctuation or mixed casing that differed from its stored form.
+- Switching to a model that does not support reasoning effort (such as Auto or MAI Code 1 Flash) no longer causes session creation to fail when a reasoning effort was previously configured.
+- Unsaved filter refinements in the My work inbox are now preserved when navigating away and back within the app.
+
+## v0.2.29
+
+### Changed
+
+- Bare GitHub PR and issue URLs in markdown now render as compact references (owner/repo#123, or #123 for same-repo links); in list items, they also include a state-aware icon and title to match github.com rich reference behavior.
+- Clicking a linked issue from the pull request body or the issue system-prompt card now opens the issue directly in the right panel instead of navigating to an external browser tab or displaying generic system prompt.
+
+### Fixed
+
+- Fixed automations failing to run after switching to a model that does not support reasoning.
+- Fixed terminal failing to launch on Windows when PowerShell 7 was installed from the Microsoft Store.
+- Fixed the timeline picker's collapsed hover area so it no longer accidentally intercepts mouse events on nearby controls in narrow viewports
+- Restoring an archived session no longer fails when the session's local git branch has been deleted (e.g. after a pull request is merged and its branch auto-deleted).
+- The "working" activity indicator (sidebar Working badge and the in-conversation loading row) now keeps animating when the OS has Reduce Motion enabled, instead of freezing into a static shape that looked stuck.
+
+## v0.2.28
+
+### Added
+
+- Press Cmd+F (Ctrl+F on Windows/Linux) inside a conversation to search for text, with match-case and match-whole-word toggles, navigation between matches, and a configurable dialog corner in General settings.
+- Quick chats now show token usage, context window, and AI credit spend in the chat title menu, matching the detail already available in regular sessions.
+- When starting a session from an issue, a new "New session in repository..." option in the start menu lets you pick which of your project repositories the session opens in.
+
+### Changed
+
+- Comments in the pull request and merge drawers now render their content progressively as you scroll, reducing load time when opening pull requests with many comments.
+- Issue pills above the composer now show the entity type in the label (for example 'Issue #1234'), matching the existing pattern used for pull request pills ('PR #6483').
+- Pasting a GitHub URL (e.g. github.com/org/repo/pull/123) into the "Add GitHub repository" search now automatically extracts the repository and searches for it instead of treating the full URL as a query.
+- Scheduled session automations now show a badge in the sidebar and display the next scheduled run time in the hover preview.
+- The banner shown during an in-progress merge, rebase, cherry-pick, or revert now reads "Resolving …" instead of "… paused", more accurately reflecting that the operation is actively being handled by the agent.
+- The conversation timeline is now always shown by default — no setting required. Timeline navigation and bookmarks are available whenever there is enough conversation history.
+- The deep link URL for the Inbox view has changed from `ghapp://inbox` to `ghapp://mywork`.
+
+### Fixed
+
+- Collapsing a session in the sidebar now correctly hides all of its descendants, even when they belong to different repository groups.
+- Fixed a soft-lock during onboarding where the "Sign in to GitHub" button never appeared for users with the system Reduce Motion accessibility setting enabled, or when the headline text was empty.
+- Fixed blank terminal tab and scripts not executing when running commands on Windows with Command Prompt (cmd.exe) as the default shell.
+- Fixed the Plan pill in the composer being taller and misaligned compared to other pills.
+- Unlimited plans no longer show incorrect exhausted-quota indicators, and session AI-credit spend is now shown consistently in the usage gauge and workspace info popover.
+
+## v0.2.27
+
+### Fixed
+
+- Fixed task-list checkboxes overflowing outside the card boundary in the pull request drawer, and enabled interactive checkbox toggling in that view.
+- The "Read documentation" link on the home screen now opens the GitHub Copilot app-specific getting started guide instead of the generic Copilot documentation page.
+
+## v0.2.26
+
+### Added
+
+- Added support for toggling task list checkboxes (`- [ ]` / `- [x]`) directly in the embedded pull request and issue descriptions. Changes are saved back to GitHub.
+- F6 and Shift+F6 now cycle keyboard focus through major regions of the app, making it faster for keyboard and screen-reader users to navigate between the sidebar, conversation area, composer, and other landmarks.
+
+### Changed
+
+- Reduced worktree session startup time by roughly half, from ~6 seconds to ~3.5 seconds.
+- The token usage section in the workspace branch popover now shows cached tokens and reasoning tokens in addition to input and output token counts.
+
+### Fixed
+
+- Conversation no longer replays a long catch-up scroll when returning to a session after display sleep, App Nap, or extended window occlusion.
+- Fixed @mentions, EMU usernames, and commit SHA links not rendering correctly in pull request descriptions containing raw HTML (e.g. <details> blocks).
+- Fixed an issue where delegated sessions using `notify_on_idle: "always"` would send a flood of repeated desktop notifications with no new content.
+- Fixed an issue where deleting a worktree session could force-delete the local branch even when it contained local commits that were never pushed, causing data loss.
+- Fixed an issue where the model picker would revert to the session's previous model when switching back to an existing session, discarding any model selection the user made.
+- Fixed inline images in private-repository issues, pull requests, and comments failing to load with an HTTP 404 error once the page had been open for a few minutes. These images now refresh their short-lived signed URLs on demand.
+- Fixed several keyboard navigation issues in the sidebar chat list: Tab now correctly exits the list instead of getting trapped, activating "Show more" moves focus to the first newly revealed item, and pressing Space no longer accidentally activates a chat row while typing a search.
+- Fixed the end-of-response actions toolbar (copy, share, bookmark, fork) appearing on an assistant message while the response was still in progress. The toolbar now stays hidden across the whole in-flight response and only surfaces once the turn genuinely ends.
+- Removed spurious "No comments yet." placeholder from the pull request conversation area and review draft panel when there are no comments.
+- Settings dropdowns now immediately reflect the chosen archive and delete windows after accepting the auto-cleanup prompt, instead of showing "Disabled" until the next app restart.
+- Show a loading spinner in the diff view when file changes are still loading, preventing a blank white area with no visual feedback.
+- The branch sync indicator now correctly shows when a workspace branch is both diverged from its upstream and behind the PR base, instead of silently dropping the behind-base count and showing a misleading status.
+
+## v0.2.25
+
+### Fixed
+
+- The app now restores your last viewed page after a reload (such as waking your Mac from sleep), instead of returning you to the home screen.
+
+## v0.2.24
+
+### Fixed
+
+- In worktree sessions, the agent now correctly anchors file paths to the worktree's own checkout instead of the project's main checkout, preventing edits from silently landing on the wrong branch.
+
+## v0.2.23
+
+### Fixed
+
+- Fixed automatic sync incorrectly resetting local branch checkouts, which could silently discard local commits or move the branch behind its expected position.
+- Fixed canvas panels disappearing while a modal overlay (such as the command palette or settings dialog) was open; the canvas now stays visible beneath the overlay.
+
+## v0.2.22
+
+### Fixed
+
+- Fixed slash commands (e.g. /chronicle) being incorrectly displayed as incoming cross-session messages instead of normal user messages.
+- Fixed the app becoming slow and unresponsive when opening a pull request or workspace with a very large diff.
+
+## v0.2.21
+
+### Added
+
+- Added a long context toggle in the model picker for models that support extended context windows, with the active tier shown in the model picker button.
+- Added support for a `gh://session/new` deep link that opens the app and starts a new session for a given repository, pull request, or branch — with optional prompt and mode query parameters.
+- Several experiments are now on for all users: canvases, MCP apps, the inbox tray menu, the channels view, cli sessions, browser-agent tools, the workspace uncommitted scope, the invertocat minigame, and editing files by selecting lines. Cloud workflows are also always on, and cloud sessions remain user-toggleable but default on for everyone. Voice dictation is now opt-in for everyone from Settings → Experimental.
+- The agent can now read back the rendered output from a terminal after running a command, enabling it to see and act on command results in the terminal.
+
+### Changed
+
+- Copilot Pro, Pro+, and Max subscribers are now taken directly to the repository selection step after sign-in, bypassing the waitlist.
+- The copy button next to PR and issue references is now always visible instead of only appearing on hover.
+- The remove-project and delete-session dialogs now accurately explain that session worktrees are force-deleted, that uncommitted work is snapshotted to a recovery ref, and that recovering that work is a manual git step.
+
+### Fixed
+
+- Automation run timeline now displays older runs above newer runs, matching the order used in the session timeline picker.
+- Command Palette now shows "Go to My work" (with the correct icon) instead of the outdated "Go to Inbox" label.
+- External links clicked inside the browser preview now show a confirmation dialog offering to open the URL in your default browser, instead of being silently blocked.
+- Fixed a bug where clicking "Update branch" after a local branch diverged from its upstream remote would send Copilot to merge or rebase the wrong target branch instead of the correct remote tracking branch.
+- Fixed a spurious scrollbar appearing in the inline diff comment textarea on macOS when "Always show scrollbars" is enabled.
+- Fixed app sluggishness (slow typing, slow session switching) when multiple concurrent sessions are streaming responses at the same time.
+- Fixed images embedded in issue timelines failing to load due to an HTTP 400 error on signed attachment URLs.
+- Fixed the !cmd shell shortcut when triggered from the home screen or an empty/new session — it now correctly bootstraps a workspace and opens a terminal tab in the session worktree directory instead of failing or running in the wrong location.
+- Pasting a pull request URL into the quick-open palette (cmd-k) now opens the session that created that PR instead of offering to start a duplicate. Sessions are also now findable by the PR title or URL even when the session name differs.
+- Quota usage percentages now display as whole numbers, consistent with the Copilot CLI.
+- Removed the floating "No comments or activity yet." text that appeared visually in the pull request and issue detail view when there was no activity.
+- Restored the hidden octocat minigame on the home screen, which had stopped appearing after a recent update.
+- Restored the message composer during active automation runs, allowing users to respond to prompts and permission requests without first opening the session separately.
+- Searching for "high contrast" in Settings now surfaces the Mode section where the High Contrast option lives.
+- The model picker and session info popover now correctly show the context window size when long context is enabled.
+- Uncommitted and untracked files are now preserved in a recoverable git ref before archiving or deleting a session, preventing silent data loss when removing worktrees.
+
+## v0.2.20
+
+### Added
+
+- Added a long context toggle in the model picker for models that support extended context windows, with the active tier shown in the model picker button.
+- Added support for a `gh://session/new` deep link that opens the app and starts a new session for a given repository, pull request, or branch — with optional prompt and mode query parameters.
+- Several experiments are now on for all users: canvases, MCP apps, the inbox tray menu, the channels view, cli sessions, browser-agent tools, the workspace uncommitted scope, the invertocat minigame, and editing files by selecting lines. Cloud workflows are also always on, and cloud sessions remain user-toggleable but default on for everyone. Voice dictation is now opt-in for everyone from Settings → Experimental.
+- The agent can now read back the rendered output from a terminal after running a command, enabling it to see and act on command results in the terminal.
+
+### Changed
+
+- Copilot Pro, Pro+, and Max subscribers are now taken directly to the repository selection step after sign-in, bypassing the waitlist.
+- The copy button next to PR and issue references is now always visible instead of only appearing on hover.
+- The remove-project and delete-session dialogs now accurately explain that session worktrees are force-deleted, that uncommitted work is snapshotted to a recovery ref, and that recovering that work is a manual git step.
+
+### Fixed
+
+- Automation run timeline now displays older runs above newer runs, matching the order used in the session timeline picker.
+- Command Palette now shows "Go to My work" (with the correct icon) instead of the outdated "Go to Inbox" label.
+- External links clicked inside the browser preview now show a confirmation dialog offering to open the URL in your default browser, instead of being silently blocked.
+- Fixed a bug where clicking "Update branch" after a local branch diverged from its upstream remote would send Copilot to merge or rebase the wrong target branch instead of the correct remote tracking branch.
+- Fixed a spurious scrollbar appearing in the inline diff comment textarea on macOS when "Always show scrollbars" is enabled.
+- Fixed app sluggishness (slow typing, slow session switching) when multiple concurrent sessions are streaming responses at the same time.
+- Fixed the !cmd shell shortcut when triggered from the home screen or an empty/new session — it now correctly bootstraps a workspace and opens a terminal tab in the session worktree directory instead of failing or running in the wrong location.
+- Pasting a pull request URL into the quick-open palette (cmd-k) now opens the session that created that PR instead of offering to start a duplicate. Sessions are also now findable by the PR title or URL even when the session name differs.
+- Quota usage percentages now display as whole numbers, consistent with the Copilot CLI.
+- Removed the floating "No comments or activity yet." text that appeared visually in the pull request and issue detail view when there was no activity.
+- Searching for "high contrast" in Settings now surfaces the Mode section where the High Contrast option lives.
+- The model picker and session info popover now correctly show the context window size when long context is enabled.
+- Uncommitted and untracked files are now preserved in a recoverable git ref before archiving or deleting a session, preventing silent data loss when removing worktrees.
+
+## v0.2.19
+
+### Fixed
+
+- Extension permission dialogs no longer disappear when the agent finishes a turn, preventing the extension from becoming permanently blocked waiting for approval.
+- Fixed an issue where the extension-permission dialog could appear on session start even when "auto-approve all tools" was enabled.
+- Fixed the session hover card appearing in the wrong position (top-left corner) when hovering over a pinned workspace in the sidebar.
+
+## v0.2.18
+
+### Changed
+
+- The files panel toolbar no longer shows redundant insertion/deletion counts when the active scope's stats match the Changes tab total (e.g. the "All changes" scope, or "Committed" with a clean working tree).
+
+### Fixed
+
+- Cross-session messages and workspace kickoffs now show the clean message text across all clients instead of the verbose internal wrapper, while the desktop still shows the sender attribution banner.
+- Fixed an issue where leaving an active streaming session with the display asleep caused the entire session to replay character-by-character on wake, with heavy repainting and blocked session switching.
+- Spell-check squiggles no longer appear in the freeform answer text box when responding to agent prompts.
+- The README toggle in the new repository dialog now shows a visible label and description, making the option clearer for sighted users.
+- When Git is not installed, the error shown during repository cloning now clearly states that Git is required and prompts you to install it, instead of showing a confusing system-level error message.
+
+## v0.2.17
+
+### Added
+
+- Extensions can now be installed from a GitHub repository folder URL (e.g. `https://github.com/{owner}/{repo}/tree/{ref}/{path}`), in addition to gist URLs.
+- The agent can now edit GitHub Actions workflow files (`.github/workflows/`) directly using its OAuth token, without requiring separate local Git credentials or the `gh` CLI.
+
+### Changed
+
+- Workflow tool calls (such as renaming sessions, running SQL queries, storing memory, and navigating) are now visible in the conversation timeline instead of being hidden, so you can see more of what the agent is doing.
+
+### Fixed
+
+- Clicking the plan.md filename link in a Create/Edit tool-call card now opens the Plan tab instead of doing nothing.
+- Decision prompts (questions, plans, permission requests) no longer steal focus when they appear, preventing accidental option selection or dismissal while typing.
+- Fixed a floating "Loading conversation…" label that was incorrectly visible while pull request comments were loading; the text is now hidden visually but still announced to screen readers.
+- Model picker tooltip now correctly shows context window size and pricing details when connected to a cloud session.
+
+## v0.2.16
+
+### Added
+
+- Sessions created by another session are now shown nested under their parent session in the sidebar.
+
+### Changed
+
+- Automation runs no longer flicker as placeholder sessions in the sidebar. Starting a run now immediately shows a 'Preparing automation' progress state. The 'Open session' button is promoted to a primary action in the run view. The Automations sidebar item now shows green/red counts of succeeded and failed runs instead of a single status dot.
+- The pull request detail view in My Work now displays branch labels with an arrow instead of verbose merge text, and the split-pane view now shows the PR title, status badge, and labels in a compact inline row.
+
+### Fixed
+
+- "Always allow for this project" permission approvals now persist correctly across sessions when using git worktrees — the approval dialog no longer re-prompts on every new worktree-backed session.
+- Fixed EGL_BAD_PARAMETER crashes on Wayland systems (Arch, Fedora 42) when launching the Linux AppImage
+- Fixed the "Last commit" diff scope incorrectly showing an empty "No changes to compare" state and a nonsense branch label when the tip commit had changes.
+- The context window size shown in the workspace header now displays the correct default tier value instead of the maximum long-context window. AI credit usage is also preserved when resuming a previous session.
+
+## v0.2.15
+
+### Changed
+
+- Branch (in-place) workspace sessions now create pull requests in-place by default instead of redirecting the agent to spawn a parallel worktree session. Picking a branch workspace is treated as the signal that work belongs in the local clone, and repo-specific guidance in AGENTS.md / CLAUDE.md takes precedence over the app's general advice. The `create_pull_request` soft gate that previously refused on branch workspaces without `allow_in_place: true` has been removed.
+
+### Fixed
+
+- Reduced UI lag in the system tray menu during workspace switching and streaming
+
+## v0.2.14
+
+### Added
+
+- Added a copy button to the markdown editor toolbar so you can copy the full document contents to your clipboard without manually selecting all the text.
+- The app now prompts you to review and trust a repository's `.github/github-app.yml` configuration file before applying any of its customizations (scripts, system-prompt injections, or automation settings). The conversation input is blocked until you approve or dismiss, and you can review or revoke trust at any time from the project settings.
+- The rubber-duck agent is now enabled by default for all users, providing constructive feedback on code and designs via the /rubber-duck slash command.
+
+### Changed
+
+- Exporting a reply as a secret gist no longer shows a success toast — the browser opens the gist automatically and the URL is copied to your clipboard.
+- Improved the MCP Servers settings page with a unified Add server button, a searchable popular servers grid with text highlighting, and a better empty state with actionable guidance.
+- Reordered settings for easier access — Scripts now appears higher in Project Settings, and Default model now appears higher in General Settings.
+- The Status filter in the filter bar now supports multi-select, letting you view open and closed items at the same time.
+
+### Fixed
+
+- Expanded sidebar project groups with no sessions now show a 'No sessions yet' label instead of appearing blank.
+- Fixed spurious "git-lfs is not installed" errors when creating worktree sessions for repositories that use Git LFS, even with git-lfs installed and working in your terminal.
+- Fixed the keyboard shortcuts dialog so the "Current view" tab (previously "Contextual") only shows shortcuts specific to the active view, hides the tab selector entirely when no view-specific shortcuts exist, and scrolls to the top when switching tabs
+- Loading spinners now rotate around their own center instead of an offset point.
+- On macOS, the bash tool in agent sessions now correctly inherits your login shell's PATH, so tools installed via Homebrew, fnm, nvm, and similar managers no longer report "command not found".
+- Slash commands (such as /chronicle) now show their short command text in the conversation timeline instead of the full verbose system prompt.
+- The Changes toolbar no longer shows a branch sync button for folder workspaces that have no local git context.
+
+## v0.2.13
+
+### Added
+
+- Added experimental Voice dictation that lets you capture speech locally and insert transcripts into the composer using a configurable shortcut, with support for push-to-talk or toggle mode, microphone device selection, and local transcription model management.
+
+### Changed
+
+- In workspace sessions, Cmd+T (Ctrl+T on Windows/Linux) now opens the add-tab palette for the right panel instead of creating a new chat session.
+- Inline review threads the agent skipped (e.g. when several comments arrive at once and the agent collapses them into a single reply) now show an "Unanswered" badge instead of the alarming "Error" badge. The "Error" label is reserved for true failures where a reply was produced but didn't stick. The inline review prompt also now explicitly tells the agent that each thread in a batch needs its own reply_to_comment call.
+- Skill invocations (e.g. /e2e-test-author, /design-foundations) now appear as a labeled card pill in the conversation instead of showing the raw prompt text.
+- The branch sync indicator now shows 'Behind origin/<base> (N↓) · Update branch' when your branch is behind its PR base, making it easier to distinguish this case from being diverged from your own remote.
+- The macOS Help menu now has working links to Documentation, What's New, Automations, MCP Servers, and Skills resources, and menu items have been reorganized and relabeled for clarity.
+- Workspaces now silently auto-sync to their server branch when it's safe to do so. PR review workspaces fast-forward when the local tree is clean and there are no unpushed commits; author workspaces fast-forward or, when there are clean unpushed commits and `merge-tree` predicts no conflicts, auto-merge upstream into the local branch. Anything riskier (dirty tree, predicted conflicts) keeps today's manual "Sync" / "Resolve conflicts" affordance.
+
+### Fixed
+
+- Clicking a session or action in the system tray menu now reliably brings the app to the foreground on macOS.
+- Filter queries using GitHub's comma-list shorthand (e.g. `repo:a/b,c/d`, `label:bug,docs`) now parse into separate filter pill values instead of a single literal value with embedded commas.
+- Fixed crash when editing certain MCP servers in Settings and corrected server type badge display
+- Help menu items (Keyboard Shortcuts, Share Feedback, Run Health Check, Show Home Tips Again, Credits, Manage Copilot Subscription) are now correctly disabled and grayed out during onboarding instead of appearing active but doing nothing when clicked.
+- Pasting a full GitHub URL (e.g. an issue or PR link) into the Add GitHub Repository field now correctly resolves to the repository instead of returning no results.
+- Pasting a GitHub repository URL into the quick-open dialog now correctly finds and shows the matching repository.
+- Selecting multiple values in a filter pill (e.g. Author, Assignee) now correctly matches any of the selected values instead of silently returning no results.
+- The session list now only includes sessions that were directly created by the CLI.
+
+## v0.2.12
+
+### Added
+
+- Added a Comments filter pill to My work for filtering by total comment count. Pick an operator (greater than, at least, less than, at most, exactly, or between) and enter a number.
+- Added a copy-to-clipboard button to the pasted text preview dialog, and made the text selectable so content can be copied via standard text selection.
+- Added a hidden minigame to the home screen — find the secret platform to start an infinite jumping adventure with power-ups, hazards, and a persistent high score.
+- Added a native system tray menu with live session status, PR checks and review info, badge notifications for sessions needing attention, quick actions to create sessions and chats, and a Settings toggle to show or hide the tray icon.
+- Added a terminal font picker in Settings that lists your installed fonts, previews each in its own typeface, and applies your selection to the embedded terminal.
+- Right-clicking a pull request or issue reference in a conversation now shows a context menu with a "Copy link" option to quickly copy the GitHub URL.
+
+### Changed
+
+- Error screens now show a plain text recovery UI instead of an illustration.
+- Project color picker in the repository context menu now displays as a compact 4x2 grid of color tiles, making it faster to scan and select. Orange has been added as a new color option.
+
+### Fixed
+
+- Avatar fallback initials no longer overflow for multi-word names — they are now capped at two letters.
+- Fixed a spurious "Error" badge appearing on inline review comment threads after the agent successfully replied to a review comment.
+- PR and issue badges now correctly respect the 'Use a pointer cursor over buttons and links' accessibility setting instead of always showing a pointer cursor.
+
 ## v0.2.11
 
 ### Added
